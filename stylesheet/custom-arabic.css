@@ -1,0 +1,47 @@
+/* Custom Arabic styles - place in catalog/view/theme/journal3/stylesheet/custom-arabic.css */
+
+/* Basic RTL + font stack */
+body.rtl {
+  direction: rtl;
+  text-align: right;
+  font-family: "Poppins", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Small header bar */
+.custom-sale-banner {
+  background: #1c1c1c;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Product card example */
+.custom-product-card {
+  border: 1px solid #eaeaea;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+.custom-product-card .info {
+  padding: 12px;
+}
+.custom-product-card .product-name {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.custom-product-card .add-to-cart-btn {
+  width: 100%;
+  background: #ff7c17;
+  color: #fff;
+  border: 0;
+  padding: 8px 10px;
+  border-radius: 4px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .custom-sale-banner { font-size: 13px; padding: 14px 0; }
+  .custom-product-card .info { padding: 10px; }
+}
