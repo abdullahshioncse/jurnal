@@ -15,7 +15,7 @@
         </a>
         
         <!-- Wishlist Button -->
-        <div class="anima-product-wishlist" onclick="wishlist.add('{{ product_id }}')">
+        <div class="anima-product-wishlist" data-product-id="{{ product_id }}" data-action="wishlist">
             <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" style="width: 20px; height: 20px;" />
         </div>
         
@@ -48,7 +48,7 @@
         </div>
         
         <!-- Add to Cart Button -->
-        <button class="anima-product-cart-btn" onclick="cart.add('{{ product_id }}')">
+        <button class="anima-product-cart-btn" data-product-id="{{ product_id }}" data-action="cart">
             أضف إلى السلة
         </button>
     </div>

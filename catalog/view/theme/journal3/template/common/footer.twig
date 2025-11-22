@@ -58,5 +58,30 @@
     </div>
 </footer>
 
+<script>
+// Event delegation for product card interactions
+(function() {
+    document.addEventListener('click', function(e) {
+        var target = e.target.closest('[data-action]');
+        if (!target) return;
+        
+        var action = target.getAttribute('data-action');
+        var productId = target.getAttribute('data-product-id');
+        
+        if (action === 'cart' && productId) {
+            e.preventDefault();
+            if (typeof cart !== 'undefined' && typeof cart.add === 'function') {
+                cart.add(productId);
+            }
+        } else if (action === 'wishlist' && productId) {
+            e.preventDefault();
+            if (typeof wishlist !== 'undefined' && typeof wishlist.add === 'function') {
+                wishlist.add(productId);
+            }
+        }
+    });
+})();
+</script>
+
 </body>
 </html>

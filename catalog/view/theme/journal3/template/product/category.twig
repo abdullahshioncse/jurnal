@@ -34,7 +34,7 @@
 <div class="anima-category-toolbar">
     <div class="anima-category-filter">
         {% if categories is defined and categories is iterable and categories|length > 0 %}
-            <button class="anima-filter-btn" onclick="toggleFilter()">
+            <button class="anima-filter-btn" id="toggle-filter-btn">
                 <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-filter-3.svg" alt="Filter" style="width: 20px; height: 20px;" />
                 <span>تصفية</span>
             </button>
@@ -43,7 +43,7 @@
     
     <div class="anima-category-sort">
         <label for="sort-select" style="font-size: 14px; color: var(--anima-eerie-black);">ترتيب حسب:</label>
-        <select id="sort-select" name="sort" class="anima-sort-select" onchange="location = this.value;">
+        <select id="sort-select" name="sort" class="anima-sort-select">
             {% if sorts is defined and sorts is iterable %}
                 {% for sort_option in sorts %}
                     <option value="{{ sort_option.href|default('#') }}" {% if sort_option.value == sort %}selected{% endif %}>
@@ -84,10 +84,26 @@
 </section>
 
 <script>
-function toggleFilter() {
-    // Toggle filter panel
-    alert('Filter functionality to be implemented');
-}
+(function() {
+    // Filter toggle
+    var filterBtn = document.getElementById('toggle-filter-btn');
+    if (filterBtn) {
+        filterBtn.addEventListener('click', function() {
+            // Toggle filter panel
+            alert('Filter functionality to be implemented');
+        });
+    }
+    
+    // Sort dropdown
+    var sortSelect = document.getElementById('sort-select');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            if (this.value) {
+                window.location = this.value;
+            }
+        });
+    }
+})();
 </script>
 
 {% include 'common/footer.twig' %}

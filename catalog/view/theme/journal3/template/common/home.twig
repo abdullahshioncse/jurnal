@@ -7,8 +7,8 @@
         <h1 class="anima-hero-title">{{ hero_title|default('تسوّق الآن') }}</h1>
         <p class="anima-hero-desc">{{ hero_desc|default('اكتشف أحدث المجموعات من الملابس والإكسسوارات الرياضية') }}</p>
         <div style="display: flex; gap: 12px; justify-content: flex-end;">
-            <button class="anima-hero-btn" onclick="window.location='{{ shop_link|default('index.php?route=product/category') }}'">ابدأ التسوّق</button>
-            <button class="anima-hero-btn" style="background-color: transparent; border: 2px solid var(--anima-white);" onclick="window.location='{{ details_link|default('#') }}'">عرض التفاصيل</button>
+            <a href="{{ shop_link|default('index.php?route=product/category') }}" class="anima-hero-btn" style="text-decoration: none;">ابدأ التسوّق</a>
+            <a href="{{ details_link|default('#') }}" class="anima-hero-btn" style="text-decoration: none; background-color: transparent; border: 2px solid var(--anima-white);">عرض التفاصيل</a>
         </div>
     </div>
 </section>
@@ -18,10 +18,10 @@
     <div class="anima-section-header">
         <h2 class="anima-section-title">منتجات قد تعجبك</h2>
         <div class="anima-section-nav">
-            <div class="anima-nav-arrow" onclick="scrollProducts('featured', -1)">
+            <div class="anima-nav-arrow" data-scroll="featured" data-direction="-1">
                 <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-arrow---right-2.svg" alt="Next" />
             </div>
-            <div class="anima-nav-arrow" onclick="scrollProducts('featured', 1)">
+            <div class="anima-nav-arrow" data-scroll="featured" data-direction="1">
                 <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-arrow---left-2-1.svg" alt="Previous" />
             </div>
         </div>
@@ -38,7 +38,7 @@
                 <div class="anima-product-card">
                     <div class="anima-product-image-wrapper">
                         <img src="catalog/view/theme/journal3/image/anima/rectangle-1166.png" alt="Product" class="anima-product-image" />
-                        <div class="anima-product-wishlist">
+                        <div class="anima-product-wishlist" data-product-id="0" data-action="wishlist">
                             <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" style="width: 20px; height: 20px;" />
                         </div>
                         <div class="anima-product-badge">مجموعة جديدة</div>
@@ -49,7 +49,7 @@
                         <div class="anima-product-price">
                             <span class="anima-product-price-new">5.000 KD</span>
                         </div>
-                        <button class="anima-product-cart-btn">أضف إلى السلة</button>
+                        <button class="anima-product-cart-btn" data-product-id="0" data-action="cart">أضف إلى السلة</button>
                     </div>
                 </div>
             {% endfor %}
@@ -69,10 +69,10 @@
             </div>
         </div>
         <div class="anima-section-nav">
-            <div class="anima-nav-arrow" onclick="scrollProducts('new', -1)">
+            <div class="anima-nav-arrow" data-scroll="new" data-direction="-1">
                 <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-arrow---right-2.svg" alt="Next" />
             </div>
-            <div class="anima-nav-arrow" onclick="scrollProducts('new', 1)">
+            <div class="anima-nav-arrow" data-scroll="new" data-direction="1">
                 <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-arrow---left-2-1.svg" alt="Previous" />
             </div>
         </div>
@@ -89,7 +89,7 @@
                 <div class="anima-product-card">
                     <div class="anima-product-image-wrapper">
                         <img src="catalog/view/theme/journal3/image/anima/rectangle-116{{ i + 5 }}.png" alt="Product" class="anima-product-image" />
-                        <div class="anima-product-wishlist">
+                        <div class="anima-product-wishlist" data-product-id="0" data-action="wishlist">
                             <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" style="width: 20px; height: 20px;" />
                         </div>
                         <div class="anima-product-badge">مجموعة جديدة</div>
@@ -100,7 +100,7 @@
                         <div class="anima-product-price">
                             <span class="anima-product-price-new">5.000 KD</span>
                         </div>
-                        <button class="anima-product-cart-btn">أضف إلى السلة</button>
+                        <button class="anima-product-cart-btn" data-product-id="0" data-action="cart">أضف إلى السلة</button>
                     </div>
                 </div>
             {% endfor %}
@@ -108,21 +108,30 @@
     </div>
     
     <div style="text-align: center; margin-top: 32px;">
-        <button class="anima-hero-btn" onclick="window.location='{{ all_products|default('index.php?route=product/category') }}'">عرض الكل</button>
+        <a href="{{ all_products|default('index.php?route=product/category') }}" class="anima-hero-btn" style="text-decoration: none;">عرض الكل</a>
     </div>
 </section>
 
 <script>
-function scrollProducts(section, direction) {
-    const container = document.getElementById(section + '-products');
-    if (container) {
-        const scrollAmount = container.offsetWidth / 2;
-        container.scrollBy({
-            left: scrollAmount * direction,
-            behavior: 'smooth'
-        });
-    }
-}
+// Product carousel scrolling with event delegation
+(function() {
+    document.addEventListener('click', function(e) {
+        var arrow = e.target.closest('[data-scroll]');
+        if (!arrow) return;
+        
+        var section = arrow.getAttribute('data-scroll');
+        var direction = parseInt(arrow.getAttribute('data-direction')) || 0;
+        var container = document.getElementById(section + '-products');
+        
+        if (container) {
+            var scrollAmount = container.offsetWidth / 2;
+            container.scrollBy({
+                left: scrollAmount * direction,
+                behavior: 'smooth'
+            });
+        }
+    });
+})();
 </script>
 
 {% include 'common/footer.twig' %}

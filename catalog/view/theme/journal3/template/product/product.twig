@@ -32,11 +32,11 @@
         
         {% if images is defined and images is iterable and images|length > 0 %}
             <div class="anima-product-thumbnails">
-                <div class="anima-product-thumbnail active" onclick="changeImage('{{ image|default('') }}', this)">
+                <div class="anima-product-thumbnail active" data-image="{{ image|default('') }}">
                     <img src="{{ image|default('catalog/view/theme/journal3/image/anima/rectangle-1166.png') }}" alt="{{ heading_title|default('Product') }}" />
                 </div>
                 {% for img in images %}
-                    <div class="anima-product-thumbnail" onclick="changeImage('{{ img.popup|default(img.thumb|default('')) }}', this)">
+                    <div class="anima-product-thumbnail" data-image="{{ img.popup|default(img.thumb|default('')) }}">
                         <img src="{{ img.thumb|default('') }}" alt="{{ heading_title|default('Product') }}" />
                     </div>
                 {% endfor %}
@@ -113,18 +113,18 @@
         <div class="anima-product-quantity">
             <span class="anima-quantity-label">الكمية:</span>
             <div class="anima-quantity-control">
-                <button type="button" class="anima-quantity-btn" onclick="decreaseQuantity()">-</button>
+                <button type="button" class="anima-quantity-btn" data-qty-action="decrease">-</button>
                 <input type="text" name="quantity" value="1" id="quantity-input" class="anima-quantity-input" readonly />
-                <button type="button" class="anima-quantity-btn" onclick="increaseQuantity()">+</button>
+                <button type="button" class="anima-quantity-btn" data-qty-action="increase">+</button>
             </div>
         </div>
         
         <!-- Product Actions -->
         <div class="anima-product-actions">
-            <button type="button" class="anima-product-add-cart" onclick="addToCart()">
+            <button type="button" class="anima-product-add-cart" id="add-to-cart-btn">
                 أضف إلى السلة
             </button>
-            <button type="button" class="anima-product-add-wishlist" onclick="wishlist.add('{{ product_id|default(0) }}')">
+            <button type="button" class="anima-product-add-wishlist" data-product-id="{{ product_id|default(0) }}" data-action="wishlist">
                 <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" style="width: 24px; height: 24px;" />
             </button>
         </div>
@@ -157,57 +157,74 @@
 {% endif %}
 
 <script>
-var product_id = {{ product_id|default(0) }};
-
-function changeImage(imageSrc, element) {
-    document.getElementById('main-product-image').src = imageSrc;
+(function() {
+    var product_id = {{ product_id|default(0) }};
     
-    // Update active thumbnail
+    // Image gallery
     var thumbnails = document.querySelectorAll('.anima-product-thumbnail');
+    var mainImage = document.getElementById('main-product-image');
+    
     thumbnails.forEach(function(thumb) {
-        thumb.classList.remove('active');
-    });
-    element.classList.add('active');
-}
-
-function increaseQuantity() {
-    var input = document.getElementById('quantity-input');
-    var currentValue = parseInt(input.value) || 1;
-    input.value = currentValue + 1;
-}
-
-function decreaseQuantity() {
-    var input = document.getElementById('quantity-input');
-    var currentValue = parseInt(input.value) || 1;
-    if (currentValue > 1) {
-        input.value = currentValue - 1;
-    }
-}
-
-function addToCart() {
-    var quantity = document.getElementById('quantity-input').value;
-    
-    // Get selected options
-    var options = {};
-    var optionElements = document.querySelectorAll('#product select, #product input[type="radio"]:checked');
-    
-    optionElements.forEach(function(element) {
-        if (element.value) {
-            var matches = element.name.match(/option\[(\d+)\]/);
-            if (matches) {
-                options[matches[1]] = element.value;
+        thumb.addEventListener('click', function() {
+            var imageSrc = this.getAttribute('data-image');
+            if (mainImage && imageSrc) {
+                mainImage.src = imageSrc;
             }
+            
+            // Update active thumbnail
+            thumbnails.forEach(function(t) {
+                t.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
+    
+    // Quantity controls
+    var qtyInput = document.getElementById('quantity-input');
+    
+    document.addEventListener('click', function(e) {
+        var target = e.target.closest('[data-qty-action]');
+        if (!target || !qtyInput) return;
+        
+        var action = target.getAttribute('data-qty-action');
+        var currentValue = parseInt(qtyInput.value) || 1;
+        
+        if (action === 'increase') {
+            qtyInput.value = currentValue + 1;
+        } else if (action === 'decrease' && currentValue > 1) {
+            qtyInput.value = currentValue - 1;
         }
     });
     
-    // Call cart.add function (should be defined in Journal3)
-    if (typeof cart !== 'undefined' && typeof cart.add === 'function') {
-        cart.add(product_id, quantity, options);
-    } else {
-        // Fallback: redirect to cart
-        window.location = 'index.php?route=checkout/cart&product_id=' + product_id + '&quantity=' + quantity;
+    // Add to cart
+    var addToCartBtn = document.getElementById('add-to-cart-btn');
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', function() {
+            var quantity = qtyInput ? qtyInput.value : 1;
+            
+            // Get selected options
+            var options = {};
+            var optionElements = document.querySelectorAll('#product select, #product input[type="radio"]:checked');
+            
+            optionElements.forEach(function(element) {
+                if (element.value) {
+                    var matches = element.name.match(/option\[(\d+)\]/);
+                    if (matches) {
+                        options[matches[1]] = element.value;
+                    }
+                }
+            });
+            
+            // Call cart.add function (should be defined in Journal3)
+            if (typeof cart !== 'undefined' && typeof cart.add === 'function') {
+                cart.add(product_id, quantity, options);
+            } else {
+                // Fallback: redirect to cart
+                window.location = 'index.php?route=checkout/cart&product_id=' + product_id + '&quantity=' + quantity;
+            }
+        });
     }
-}
+})();
 </script>
 
 {% include 'common/footer.twig' %}
