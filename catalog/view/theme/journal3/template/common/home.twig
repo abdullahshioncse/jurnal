@@ -1,0 +1,136 @@
+{{ header }}
+
+<!-- Anima Hero Banner Section -->
+<div class="anima-hero-banner">
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-title">{{ 'Discover Your Style'|default('Discover Your Style') }}</h1>
+      <p class="hero-subtitle">{{ 'Premium fashion at unbeatable prices'|default('Premium fashion at unbeatable prices') }}</p>
+      <div class="hero-buttons">
+        <a href="#" class="btn btn-primary">{{ 'Shop Now'|default('Shop Now') }}</a>
+        <a href="#" class="btn btn-secondary">{{ 'View Collection'|default('View Collection') }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ journal3_top|default('')|raw }}
+
+{% if content_top or content_bottom or column_left or column_right %}
+<div id="common-home" class="container">
+  <div class="row">{{ column_left|default('')|raw }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    {% if content_top or content_bottom %}
+    <div id="content" class="{{ class }}">{{ content_top|default('')|raw }}{{ content_bottom|default('')|raw }}</div>
+    {% endif %}
+    {{ column_right|default('')|raw }}</div>
+</div>
+{% endif %}
+
+<!-- Featured Products Section: "You May Like" -->
+<div class="anima-section featured-products">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">{{ 'You May Like'|default('You May Like') }}</h2>
+      <div class="section-actions">
+        <button class="carousel-arrow prev-arrow" data-target="featured-carousel">‹</button>
+        <button class="carousel-arrow next-arrow" data-target="featured-carousel">›</button>
+      </div>
+    </div>
+    
+    <div class="product-carousel" id="featured-carousel">
+      <div class="product-grid">
+        {% if products is defined and products is iterable %}
+          {% for product in products %}
+            {% include 'catalog/view/theme/journal3/template/product/product_card.twig' with {'product': product} %}
+          {% endfor %}
+        {% else %}
+          <!-- Placeholder products -->
+          {% for i in 1..4 %}
+          <div class="product-card">
+            <div class="product-image">
+              <img src="catalog/view/theme/journal3/image/anima/placeholder-product.jpg" alt="Product" />
+              <div class="product-badges">
+                <span class="badge badge-new">{{ 'New'|default('New') }}</span>
+              </div>
+              <button class="wishlist-btn">
+                <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" />
+              </button>
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">{{ 'Sample Product'|default('Sample Product') }}</h3>
+              <p class="product-model">{{ 'Model: PRD-'|default('Model: PRD-') }}{{ i }}</p>
+              <div class="product-price">
+                <span class="price-current">$99.99</span>
+              </div>
+              <button class="btn btn-cart">{{ 'Add to Cart'|default('Add to Cart') }}</button>
+            </div>
+          </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+      <div class="carousel-pagination" data-carousel="featured-carousel"></div>
+    </div>
+  </div>
+</div>
+
+<!-- New Arrivals Section with Category Tabs -->
+<div class="anima-section new-arrivals">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">{{ 'New Arrivals'|default('New Arrivals') }}</h2>
+    </div>
+    
+    <!-- Category Tabs -->
+    <div class="category-tabs">
+      <button class="tab-btn active" data-category="all">{{ 'All'|default('All') }}</button>
+      <button class="tab-btn" data-category="men">{{ 'Men'|default('Men') }}</button>
+      <button class="tab-btn" data-category="women">{{ 'Women'|default('Women') }}</button>
+      <button class="tab-btn" data-category="accessories">{{ 'Accessories'|default('Accessories') }}</button>
+    </div>
+    
+    <div class="product-carousel" id="arrivals-carousel">
+      <div class="product-grid">
+        {% if latest_products is defined and latest_products is iterable %}
+          {% for product in latest_products %}
+            {% include 'catalog/view/theme/journal3/template/product/product_card.twig' with {'product': product} %}
+          {% endfor %}
+        {% else %}
+          <!-- Placeholder products -->
+          {% for i in 1..4 %}
+          <div class="product-card">
+            <div class="product-image">
+              <img src="catalog/view/theme/journal3/image/anima/placeholder-product.jpg" alt="Product" />
+              <div class="product-badges">
+                <span class="badge badge-sale">{{ 'Sale'|default('Sale') }}</span>
+              </div>
+              <button class="wishlist-btn">
+                <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" />
+              </button>
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">{{ 'New Arrival Product'|default('New Arrival Product') }}</h3>
+              <p class="product-model">{{ 'Model: NEW-'|default('Model: NEW-') }}{{ i }}</p>
+              <div class="product-price">
+                <span class="price-old">$129.99</span>
+                <span class="price-current">$89.99</span>
+              </div>
+              <button class="btn btn-cart">{{ 'Add to Cart'|default('Add to Cart') }}</button>
+            </div>
+          </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+      <div class="carousel-pagination" data-carousel="arrivals-carousel"></div>
+    </div>
+  </div>
+</div>
+
+{{ journal3_rich_snippets|default('')|raw }}
+{{ footer }}

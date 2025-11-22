@@ -1,0 +1,402 @@
+{{ header }}
+
+<!-- Breadcrumb Navigation -->
+<div class="breadcrumbs {{ journal3.get('breadcrumbs_color_scheme')|default('') }}">
+  <div class="container">
+    <ul class="breadcrumb">
+      {% if breadcrumbs is defined and breadcrumbs is iterable %}
+      {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href|default('#') }}">{{ breadcrumb.text|default('') }}</a></li>
+      {% endfor %}
+      {% endif %}
+    </ul>
+  </div>
+</div>
+
+{{ journal3_top|default('')|raw }}
+
+<div id="product-product" class="container">
+  <div class="row">{{ column_left|default('')|raw }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    
+    <div id="content" class="{{ class }}">
+      {{ content_top|default('')|raw }}
+      
+      <div class="product-detail-wrapper">
+        <div class="row">
+          <!-- Product Image Gallery -->
+          <div class="col-sm-6 product-gallery">
+            <div class="main-image">
+              {% if popup is defined and popup %}
+              <a href="{{ popup }}" class="product-image-popup">
+                <img src="{{ thumb|default('') }}" alt="{{ heading|default('') }}" id="main-product-image" class="img-responsive" />
+              </a>
+              {% else %}
+              <img src="{{ thumb|default('') }}" alt="{{ heading|default('') }}" id="main-product-image" class="img-responsive" />
+              {% endif %}
+            </div>
+            
+            {% if images is defined and images is iterable and images|length > 0 %}
+            <div class="thumbnail-images">
+              <div class="thumbnail-grid">
+                <div class="thumbnail-item active">
+                  <img src="{{ thumb|default('') }}" alt="{{ heading|default('') }}" onclick="changeMainImage(this.src, '{{ popup|default('') }}');" />
+                </div>
+                {% for image in images %}
+                <div class="thumbnail-item">
+                  <img src="{{ image.thumb|default('') }}" alt="{{ heading|default('') }}" onclick="changeMainImage(this.src, '{{ image.popup|default('') }}');" />
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          
+          <!-- Product Information -->
+          <div class="col-sm-6 product-info-section">
+            <h1 class="product-title">{{ heading|default('') }}</h1>
+            
+            {% if manufacturer is defined and manufacturer %}
+            <div class="product-brand">
+              <span>{{ text_manufacturer|default('Brand') }}:</span>
+              <a href="{{ manufacturer_href|default('#') }}">{{ manufacturer }}</a>
+            </div>
+            {% endif %}
+            
+            {% if model is defined and model %}
+            <div class="product-code">
+              <span>{{ text_model|default('Model') }}:</span>
+              <strong>{{ model }}</strong>
+            </div>
+            {% endif %}
+            
+            <!-- Product Rating -->
+            {% if review_status %}
+            <div class="product-rating">
+              <div class="rating-stars">
+                {% for i in 1..5 %}
+                <span class="star {{ i <= rating ? 'filled' : '' }}">★</span>
+                {% endfor %}
+              </div>
+              <a href="#product-reviews" class="review-link">{{ reviews|default('0') }} {{ text_reviews|default('Reviews') }}</a>
+            </div>
+            {% endif %}
+            
+            <!-- Product Price -->
+            <div class="product-price-section">
+              {% if price is defined %}
+              <div class="price-wrapper">
+                {% if special is defined and special %}
+                <span class="price-old">{{ price }}</span>
+                <span class="price-current">{{ special }}</span>
+                {% else %}
+                <span class="price-current">{{ price }}</span>
+                {% endif %}
+                {% if tax is defined %}
+                <span class="price-tax">{{ tax }}</span>
+                {% endif %}
+              </div>
+              {% endif %}
+              
+              {% if discounts is defined and discounts is iterable %}
+              <div class="price-discounts">
+                {% for discount in discounts %}
+                <div class="discount-tier">{{ discount.quantity }}{{ text_discount|default('+') }} {{ discount.price }}</div>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+            
+            <!-- Stock Status -->
+            {% if stock is defined %}
+            <div class="product-stock {{ stock_class|default('') }}">
+              <strong>{{ text_stock|default('Availability') }}:</strong>
+              <span>{{ stock }}</span>
+            </div>
+            {% endif %}
+            
+            <!-- Product Description Short -->
+            {% if description is defined and description %}
+            <div class="product-description-short">
+              {{ description|raw }}
+            </div>
+            {% endif %}
+            
+            <form id="product-form">
+              <!-- Product Options -->
+              {% if options is defined and options is iterable %}
+              <div class="product-options">
+                {% for option in options %}
+                <div class="form-group {{ option.type|default('') }}">
+                  <label class="control-label">
+                    {% if option.required %}
+                    <span class="required">*</span>
+                    {% endif %}
+                    {{ option.name|default('') }}:
+                  </label>
+                  
+                  {% if option.type == 'select' %}
+                  <select name="option[{{ option.product_option_id }}]" class="form-control">
+                    <option value="">{{ text_select|default('--- Please Select ---') }}</option>
+                    {% if option.product_option_value is defined and option.product_option_value is iterable %}
+                    {% for option_value in option.product_option_value %}
+                    <option value="{{ option_value.product_option_value_id }}">
+                      {{ option_value.name }}
+                      {% if option_value.price %}({{ option_value.price_prefix }}{{ option_value.price }}){% endif %}
+                    </option>
+                    {% endfor %}
+                    {% endif %}
+                  </select>
+                  
+                  {% elseif option.type == 'radio' %}
+                  <div class="radio-options">
+                    {% if option.product_option_value is defined and option.product_option_value is iterable %}
+                    {% for option_value in option.product_option_value %}
+                    <label class="radio-inline">
+                      <input type="radio" name="option[{{ option.product_option_id }}]" value="{{ option_value.product_option_value_id }}" />
+                      {{ option_value.name }}
+                      {% if option_value.price %}({{ option_value.price_prefix }}{{ option_value.price }}){% endif %}
+                    </label>
+                    {% endfor %}
+                    {% endif %}
+                  </div>
+                  
+                  {% elseif option.type == 'checkbox' %}
+                  <div class="checkbox-options">
+                    {% if option.product_option_value is defined and option.product_option_value is iterable %}
+                    {% for option_value in option.product_option_value %}
+                    <label class="checkbox-inline">
+                      <input type="checkbox" name="option[{{ option.product_option_id }}][]" value="{{ option_value.product_option_value_id }}" />
+                      {{ option_value.name }}
+                      {% if option_value.price %}({{ option_value.price_prefix }}{{ option_value.price }}){% endif %}
+                    </label>
+                    {% endfor %}
+                    {% endif %}
+                  </div>
+                  {% endif %}
+                </div>
+                {% endfor %}
+              </div>
+              {% endif %}
+              
+              <!-- Quantity Selector -->
+              <div class="product-quantity">
+                <label>{{ text_qty|default('Quantity') }}:</label>
+                <div class="quantity-selector">
+                  <button type="button" class="qty-btn qty-minus" onclick="decreaseQty();">-</button>
+                  <input type="text" name="quantity" value="{{ minimum|default('1') }}" size="2" id="input-quantity" class="form-control" />
+                  <button type="button" class="qty-btn qty-plus" onclick="increaseQty();">+</button>
+                </div>
+              </div>
+              
+              <!-- Action Buttons -->
+              <div class="product-actions">
+                <button type="button" id="button-cart" class="btn btn-primary btn-lg btn-block" onclick="addToCart();">
+                  <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-bag.svg" alt="Cart" />
+                  <span>{{ button_cart|default('Add to Cart') }}</span>
+                </button>
+                
+                <div class="action-buttons-secondary">
+                  <button type="button" class="btn btn-wishlist" onclick="wishlist.add('{{ product_id|default('') }}');">
+                    <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" />
+                    <span>{{ button_wishlist|default('Wishlist') }}</span>
+                  </button>
+                  <button type="button" class="btn btn-compare" onclick="compare.add('{{ product_id|default('') }}');">
+                    <span>{{ button_compare|default('Compare') }}</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        <!-- Product Tabs -->
+        <div class="product-tabs">
+          <ul class="nav nav-tabs" role="tablist">
+            {% if description is defined and description %}
+            <li role="presentation" class="active">
+              <a href="#tab-description" aria-controls="description" role="tab" data-toggle="tab">{{ tab_description|default('Description') }}</a>
+            </li>
+            {% endif %}
+            {% if attribute_groups is defined and attribute_groups is iterable %}
+            <li role="presentation">
+              <a href="#tab-specification" aria-controls="specification" role="tab" data-toggle="tab">{{ tab_attribute|default('Specification') }}</a>
+            </li>
+            {% endif %}
+            {% if review_status %}
+            <li role="presentation">
+              <a href="#tab-review" aria-controls="review" role="tab" data-toggle="tab">{{ tab_review|default('Reviews') }} ({{ reviews|default('0') }})</a>
+            </li>
+            {% endif %}
+          </ul>
+          
+          <div class="tab-content">
+            {% if description is defined and description %}
+            <div role="tabpanel" class="tab-pane active" id="tab-description">
+              {{ description|raw }}
+            </div>
+            {% endif %}
+            
+            {% if attribute_groups is defined and attribute_groups is iterable %}
+            <div role="tabpanel" class="tab-pane" id="tab-specification">
+              <table class="table table-bordered">
+                {% for attribute_group in attribute_groups %}
+                <thead>
+                  <tr>
+                    <td colspan="2"><strong>{{ attribute_group.name|default('') }}</strong></td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if attribute_group.attribute is defined and attribute_group.attribute is iterable %}
+                  {% for attribute in attribute_group.attribute %}
+                  <tr>
+                    <td>{{ attribute.name|default('') }}</td>
+                    <td>{{ attribute.text|default('') }}</td>
+                  </tr>
+                  {% endfor %}
+                  {% endif %}
+                </tbody>
+                {% endfor %}
+              </table>
+            </div>
+            {% endif %}
+            
+            {% if review_status %}
+            <div role="tabpanel" class="tab-pane" id="tab-review">
+              <div id="review"></div>
+              <h3>{{ text_write|default('Write a Review') }}</h3>
+              <form class="review-form">
+                <div class="form-group">
+                  <label>{{ entry_name|default('Your Name') }}:</label>
+                  <input type="text" name="name" class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label>{{ entry_review|default('Your Review') }}:</label>
+                  <textarea name="text" rows="5" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>{{ entry_rating|default('Rating') }}:</label>
+                  <div class="rating-input">
+                    <input type="radio" name="rating" value="1" /> 1
+                    <input type="radio" name="rating" value="2" /> 2
+                    <input type="radio" name="rating" value="3" /> 3
+                    <input type="radio" name="rating" value="4" /> 4
+                    <input type="radio" name="rating" value="5" /> 5
+                  </div>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="submitReview();">{{ button_continue|default('Submit Review') }}</button>
+              </form>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Related Products -->
+      {% if products is defined and products is iterable and products|length > 0 %}
+      <div class="related-products">
+        <h3 class="section-title">{{ text_related|default('Related Products') }}</h3>
+        <div class="product-grid">
+          {% for product in products %}
+            {% include 'catalog/view/theme/journal3/template/product/product_card.twig' with {'product': product} %}
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      
+      {{ content_bottom|default('')|raw }}
+    </div>
+    
+    {{ column_right|default('')|raw }}
+  </div>
+</div>
+
+{{ journal3_rich_snippets|default('')|raw }}
+{{ footer }}
+
+<script>
+function changeMainImage(src, popup) {
+  document.getElementById('main-product-image').src = src;
+  if (popup) {
+    document.querySelector('.product-image-popup').href = popup;
+  }
+  // Update active thumbnail
+  document.querySelectorAll('.thumbnail-item').forEach(function(item) {
+    item.classList.remove('active');
+  });
+  event.target.closest('.thumbnail-item').classList.add('active');
+}
+
+function increaseQty() {
+  var qty = document.getElementById('input-quantity');
+  var currentVal = parseInt(qty.value);
+  if (!isNaN(currentVal)) {
+    qty.value = currentVal + 1;
+  }
+}
+
+function decreaseQty() {
+  var qty = document.getElementById('input-quantity');
+  var currentVal = parseInt(qty.value);
+  if (!isNaN(currentVal) && currentVal > 1) {
+    qty.value = currentVal - 1;
+  }
+}
+
+function addToCart() {
+  // AJAX Add to Cart functionality
+  $.ajax({
+    url: 'index.php?route=checkout/cart/add',
+    type: 'post',
+    data: $('#product-form input[type=\'text\'], #product-form input[type=\'hidden\'], #product-form input[type=\'radio\']:checked, #product-form input[type=\'checkbox\']:checked, #product-form select, #product-form textarea'),
+    dataType: 'json',
+    beforeSend: function() {
+      $('#button-cart').button('loading');
+    },
+    complete: function() {
+      $('#button-cart').button('reset');
+    },
+    success: function(json) {
+      if (json['error']) {
+        if (json['error']['option']) {
+          for (var i in json['error']['option']) {
+            alert(json['error']['option'][i]);
+          }
+        }
+        if (json['error']['recurring']) {
+          alert(json['error']['recurring']);
+        }
+      }
+      if (json['success']) {
+        alert(json['success']);
+        $('#cart').load('index.php?route=common/cart/info');
+      }
+    }
+  });
+}
+
+function submitReview() {
+  // AJAX Review submission
+  $.ajax({
+    url: 'index.php?route=product/product/write&product_id={{ product_id|default('') }}',
+    type: 'post',
+    dataType: 'json',
+    data: $('.review-form').serialize(),
+    success: function(json) {
+      if (json['error']) {
+        alert(json['error']);
+      }
+      if (json['success']) {
+        alert(json['success']);
+        $('.review-form')[0].reset();
+      }
+    }
+  });
+}
+</script>

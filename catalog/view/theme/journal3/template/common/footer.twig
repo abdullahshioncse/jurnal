@@ -1,0 +1,120 @@
+{% if journal3 is not defined %}
+<style>body { display: none !important; }</style>
+<script>window.location = 'index.php?route=journal3/startup/error_not_installed';</script>
+{% endif %}
+
+{{ journal3_bottom|default('')|raw }}
+
+{{ '</div>' }}{# .site-wrapper #}
+
+<!-- Anima Footer -->
+<footer class="anima-footer">
+  <!-- Newsletter Section -->
+  <div class="newsletter-section">
+    <div class="container">
+      <div class="newsletter-content">
+        <h3>{{ 'Subscribe to our newsletter'|default('Subscribe to our newsletter') }}</h3>
+        <p>{{ 'Get the latest updates on new products and upcoming sales'|default('Get the latest updates on new products and upcoming sales') }}</p>
+        <form action="{{ newsletter_action|default('index.php?route=extension/module/newsletter') }}" method="post" class="newsletter-form">
+          <input type="email" name="email" placeholder="{{ 'Enter your email'|default('Enter your email') }}" required class="newsletter-input" />
+          <button type="submit" class="newsletter-button">{{ 'Subscribe'|default('Subscribe') }}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Main -->
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-columns">
+        <!-- Column 1: Shop -->
+        <div class="footer-column">
+          <h4>{{ 'Shop'|default('Shop') }}</h4>
+          <ul class="footer-menu">
+            <li><a href="#">{{ 'New Arrivals'|default('New Arrivals') }}</a></li>
+            <li><a href="#">{{ 'Best Sellers'|default('Best Sellers') }}</a></li>
+            <li><a href="#">{{ 'Sale'|default('Sale') }}</a></li>
+            <li><a href="#">{{ 'All Products'|default('All Products') }}</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 2: Contact -->
+        <div class="footer-column">
+          <h4>{{ 'Contact'|default('Contact') }}</h4>
+          <ul class="footer-menu">
+            <li><a href="#">{{ 'Help Center'|default('Help Center') }}</a></li>
+            <li><a href="#">{{ 'Contact Us'|default('Contact Us') }}</a></li>
+            <li><a href="#">{{ 'Shipping Info'|default('Shipping Info') }}</a></li>
+            <li><a href="#">{{ 'Returns'|default('Returns') }}</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Quick Links -->
+        <div class="footer-column">
+          <h4>{{ 'Quick Links'|default('Quick Links') }}</h4>
+          <ul class="footer-menu">
+            <li><a href="{{ about|default('#') }}">{{ 'About Us'|default('About Us') }}</a></li>
+            <li><a href="#">{{ 'Terms & Conditions'|default('Terms & Conditions') }}</a></li>
+            <li><a href="#">{{ 'Privacy Policy'|default('Privacy Policy') }}</a></li>
+            <li><a href="#">{{ 'FAQs'|default('FAQs') }}</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Payment Methods -->
+        <div class="footer-column">
+          <h4>{{ 'We Accept'|default('We Accept') }}</h4>
+          <div class="payment-icons">
+            <img src="catalog/view/theme/journal3/image/anima/visa.svg" alt="Visa" class="payment-icon" />
+            <img src="catalog/view/theme/journal3/image/anima/mastercard.svg" alt="Mastercard" class="payment-icon" />
+            <img src="catalog/view/theme/journal3/image/anima/applepay.svg" alt="Apple Pay" class="payment-icon" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-content">
+        <p class="copyright">{{ '&copy; 2024 All Rights Reserved'|default('&copy; 2024 All Rights Reserved')|raw }}</p>
+        {% if powered is defined and powered %}
+        <p class="powered">{{ powered|raw }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{{ '</div>' }} {# .global-wrapper #}
+
+{% if scripts is defined and scripts is iterable %}
+{% for script in scripts %}
+{% if journal3.js_defer %}
+<script src="{{ script }}" defer></script>
+{% else %}
+<script src="{{ script }}"></script>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+<!-- Anima Custom JavaScript -->
+<script src="catalog/view/theme/journal3/javascript/anima-custom.js"></script>
+
+{% if journal3.get('customJS') %}
+<script type="text/javascript">{{ journal3.get('customJS')|raw }}</script>
+{% endif %}
+
+{% if not journal3.is_popup and journal3.get('customCodeFooter') %}
+{{ journal3.get('customCodeFooter')|raw }}
+{% endif %}
+
+{% if not journal3.is_popup and journal3.get('scrollTop') %}
+<div class="scroll-top"><em class="fa fa-angle-up"></em></div>
+{% endif %}
+
+{% if not journal3.is_popup and journal3.get('filterActive') %}
+<a class="mobile-filter-trigger btn" data-off-canvas="mobile-filter-container" role="button" title="{{ journal3.get('mobileFilterButtonText')|default('Filters') }}">{{ journal3.get('mobileFilterButtonText')|default('Filters') }}</a>
+{% endif %}
+
+</body></html>

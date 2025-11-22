@@ -1,0 +1,136 @@
+{{ header }}
+
+<!-- Breadcrumb Navigation -->
+{% if journal3.get('pageTitlePosition') == 'top' %}
+  <h1 class="title page-title {{ journal3.get('title_color_scheme')|default('') }}"><span class="page-title-text">{{ heading_title|default('') }}</span></h1>
+{% endif %}
+<div class="breadcrumbs {{ journal3.get('breadcrumbs_color_scheme')|default('') }}">
+  <div class="container">
+    <ul class="breadcrumb">
+      {% if breadcrumbs is defined and breadcrumbs is iterable %}
+      {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href|default('#') }}">{{ breadcrumb.text|default('') }}</a></li>
+      {% endfor %}
+      {% endif %}
+    </ul>
+  </div>
+</div>
+
+{{ journal3_top|default('')|raw }}
+
+<div id="product-category" class="container">
+  <div class="row">{{ column_left|default('')|raw }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    
+    <div id="content" class="{{ class }}">
+      {% if journal3.get('pageTitlePosition') == 'default' %}
+      <h1 class="title page-title {{ journal3.get('title_color_scheme')|default('') }}">{{ heading_title|default('') }}</h1>
+      {% endif %}
+      
+      {{ content_top|default('')|raw }}
+      
+      <!-- Category Description -->
+      {% if journal3.get('categoryPageDescStatus') %}
+      {% if thumb or description %}
+      <div class="category-description">
+        {% if thumb and journal3.get('categoryPageCategoryImageStatus') %}
+        <img src="{{ thumb }}" {% if thumb2x %}srcset="{{ thumb }} 1x, {{ thumb2x }} 2x"{% endif %} alt="{{ heading_title|default('') }}" title="{{ heading_title|default('') }}" class="category-image" width="{{ journal3.get('image_dimensions_category.width')|default('800') }}" height="{{ journal3.get('image_dimensions_category.height')|default('600') }}"/>
+        {% endif %}
+        {% if description and journal3.get('categoryPageCategoryDescriptionStatus') %}
+        <div class="category-text">{{ description|raw }}</div>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endif %}
+      
+      <!-- Subcategories -->
+      {% if journal3.get('subcategoriesStatus') and categories is defined and categories is iterable %}
+      <div class="refine-categories">
+        {% if journal3.get('refineTitle') %}
+        <h3 class="refine-title title">{{ journal3.get('refineTitleText')|default('Shop by Category') }}</h3>
+        {% endif %}
+        <div class="subcategories-grid">
+          {% for category in categories %}
+          <div class="subcategory-item">
+            <a href="{{ category.href|default('#') }}">
+              {% if category.thumb is defined and category.thumb %}
+              <img src="{{ category.thumb }}" alt="{{ category.name|default('') }}" />
+              {% endif %}
+              <span>{{ category.name|default('') }}</span>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      
+      <!-- Product Filter & Sort Bar -->
+      {% if products is defined and products is iterable and products|length > 0 %}
+      <div class="product-filter-bar">
+        <div class="filter-left">
+          <span class="product-count">{{ text_showing|default('Showing') }} {{ results|default('') }}</span>
+        </div>
+        
+        <div class="filter-right">
+          <!-- Sort Options -->
+          <div class="sort-options">
+            <label for="input-sort">{{ text_sort|default('Sort By') }}:</label>
+            <select id="input-sort" class="form-control" onchange="location = this.value;">
+              {% if sorts is defined and sorts is iterable %}
+              {% for sort in sorts %}
+              <option value="{{ sort.href|default('#') }}" {% if sort.value == sort_value %}selected="selected"{% endif %}>{{ sort.text|default('') }}</option>
+              {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+          
+          <!-- Limit Options -->
+          <div class="limit-options">
+            <label for="input-limit">{{ text_limit|default('Show') }}:</label>
+            <select id="input-limit" class="form-control" onchange="location = this.value;">
+              {% if limits is defined and limits is iterable %}
+              {% for limit_option in limits %}
+              <option value="{{ limit_option.href|default('#') }}" {% if limit_option.value == limit %}selected="selected"{% endif %}>{{ limit_option.text|default('') }}</option>
+              {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Product Grid -->
+      <div class="product-grid anima-product-grid">
+        {% for product in products %}
+          {% include 'catalog/view/theme/journal3/template/product/product_card.twig' with {'product': product} %}
+        {% endfor %}
+      </div>
+      
+      <!-- Pagination -->
+      {% if pagination is defined and pagination %}
+      <div class="pagination-wrapper">
+        {{ pagination|raw }}
+      </div>
+      {% endif %}
+      
+      {% else %}
+      <!-- No Products Message -->
+      <div class="no-products">
+        <p>{{ text_empty|default('There are no products to list in this category.') }}</p>
+      </div>
+      {% endif %}
+      
+      {{ content_bottom|default('')|raw }}
+    </div>
+    
+    {{ column_right|default('')|raw }}
+  </div>
+</div>
+
+{{ journal3_rich_snippets|default('')|raw }}
+{{ footer }}

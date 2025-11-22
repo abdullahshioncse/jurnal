@@ -1,0 +1,83 @@
+{# Reusable Product Card Component #}
+{% set product_data = product is defined ? product : {} %}
+
+<div class="product-card" data-product-id="{{ product_data.product_id|default('') }}">
+  <div class="product-image">
+    <a href="{{ product_data.href|default('#') }}">
+      {% if product_data.thumb is defined and product_data.thumb %}
+      <img src="{{ product_data.thumb }}" alt="{{ product_data.name|default('Product') }}" class="img-responsive" />
+      {% else %}
+      <img src="catalog/view/theme/journal3/image/anima/placeholder-product.jpg" alt="Product" class="img-responsive" />
+      {% endif %}
+    </a>
+    
+    <!-- Product Badges -->
+    <div class="product-badges">
+      {% if product_data.special is defined and product_data.special %}
+      <span class="badge badge-sale">{{ 'Sale'|default('Sale') }}</span>
+      {% endif %}
+      {% if product_data.date_added is defined %}
+      <span class="badge badge-new">{{ 'New'|default('New') }}</span>
+      {% endif %}
+    </div>
+    
+    <!-- Wishlist Button -->
+    <button class="wishlist-btn" onclick="wishlist.add('{{ product_data.product_id|default('') }}');">
+      <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" />
+    </button>
+    
+    <!-- Hover Actions -->
+    <div class="product-hover-actions">
+      <button class="btn-quick-view" onclick="quickView('{{ product_data.product_id|default('') }}');">
+        <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-show.svg" alt="Quick View" />
+        <span>{{ 'Quick View'|default('Quick View') }}</span>
+      </button>
+    </div>
+  </div>
+  
+  <div class="product-info">
+    <h3 class="product-name">
+      <a href="{{ product_data.href|default('#') }}">{{ product_data.name|default('Product Name') }}</a>
+    </h3>
+    
+    {% if product_data.model is defined and product_data.model %}
+    <p class="product-model">{{ 'Model'|default('Model') }}: {{ product_data.model }}</p>
+    {% endif %}
+    
+    <!-- Product Rating -->
+    {% if product_data.rating is defined and product_data.rating > 0 %}
+    <div class="product-rating">
+      <div class="rating-stars">
+        {% for i in 1..5 %}
+        <span class="star {{ i <= product_data.rating ? 'filled' : '' }}">★</span>
+        {% endfor %}
+      </div>
+      {% if product_data.reviews is defined %}
+      <span class="rating-count">({{ product_data.reviews }})</span>
+      {% endif %}
+    </div>
+    {% endif %}
+    
+    <!-- Product Price -->
+    <div class="product-price">
+      {% if product_data.special is defined and product_data.special %}
+      <span class="price-old">{{ product_data.price|default('') }}</span>
+      <span class="price-current">{{ product_data.special }}</span>
+      {% if product_data.tax is defined %}
+      <span class="price-tax">{{ product_data.tax }}</span>
+      {% endif %}
+      {% else %}
+      <span class="price-current">{{ product_data.price|default('$0.00') }}</span>
+      {% if product_data.tax is defined %}
+      <span class="price-tax">{{ product_data.tax }}</span>
+      {% endif %}
+      {% endif %}
+    </div>
+    
+    <!-- Add to Cart Button -->
+    <button class="btn btn-cart" onclick="cart.add('{{ product_data.product_id|default('') }}');">
+      <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-bag.svg" alt="Cart" />
+      <span>{{ 'Add to Cart'|default('Add to Cart') }}</span>
+    </button>
+  </div>
+</div>

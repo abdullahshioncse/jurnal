@@ -1,1 +1,202 @@
-{% if header %}\n    <header id=\"header\">\n        <div class=\"container\">\n            <div class=\"row\">\n                <div class=\"col-sm-12\">\n                    <h1>{{ heading_title }}</h1>\n                    <nav>\n                        <ul>\n                            {% for link in links %}\n                                <li><a href=\"{{ link.href }}\">{{ link.name }}</a></li>\n                            {% endfor %}\n                        </ul>\n                    </nav>\n                </div>\n            </div>\n        </div>\n    </header>\n{% endif %}
+{% if journal3 is not defined %}
+<style>body { display: none !important; }</style>
+<script>window.location = 'index.php?route=journal3/startup/error_not_installed';</script>
+{% endif %}
+<!DOCTYPE html>
+<html dir="{{ direction }}" lang="{{ lang }}" class="{{ journal3_classes is defined and journal3_classes is iterable ? journal3_classes|join(' ') : '' }}" data-ov="{{ journal3_oc_version|default('') }}" data-jv="{{ journal3_version|default('') }}">
+<head>
+<meta charset="UTF-8" />
+<meta name="theme-color" content="{{ journal3.get('theme_color')|default('#000000') }}">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>{{ title|default('') }}</title>
+<base href="{{ base }}" />
+{% if description is defined and description %}
+<meta name="description" content="{{ description }}" />
+{% endif %}
+{% if keywords is defined and keywords %}
+<meta name="keywords" content="{{ keywords }}" />
+{% endif %}
+{% if not journal3.is_popup %}
+{% if journal3_metas is defined and journal3_metas is iterable %}
+{% for meta in journal3_metas %}
+<meta {{ meta.attr|default('name') }}="{{ meta.name|default('') }}" content="{{ meta.content|default('') }}"/>
+{% endfor %}
+{% endif %}
+{% if journal3_meta_tags is defined and journal3_meta_tags is iterable %}
+{% for key, tag in journal3_meta_tags %}
+<meta {{ tag.type|default('name') }}="{{ key }}" content="{{ tag.content|default('') }}"/>
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if journal3_links is defined and journal3_links is iterable %}
+{% for link in journal3_links %}
+<link href="{{ link.href|default('') }}" rel="{{ link.rel|default('') }}" {{ link.attrs|default('')|raw }}/>
+{% endfor %}
+{% endif %}
+{% if links is defined and links is iterable %}
+{% for link in links %}
+<link href="{{ link.href|default('') }}" rel="{{ link.rel|default('') }}" />
+{% endfor %}
+{% endif %}
+{% if journal3_sentry_dsn_loader is defined and journal3_sentry_dsn_loader %}
+{% if journal3.js_defer %}
+<script src="{{ journal3_sentry_dsn_loader }}" crossorigin="anonymous" defer></script>
+{% else %}
+<script src="{{ journal3_sentry_dsn_loader }}" crossorigin="anonymous"></script>
+{% endif %}
+{% endif %}
+<script>window['Journal'] = {{ journal3_js|default('{}')|raw }};</script>
+{% if journal3_inline_scripts is defined and journal3_inline_scripts is iterable %}
+{% for script in journal3_inline_scripts %}
+<script>{{ script.href is defined ? script.href : script|raw }}</script>
+{% endfor %}
+{% endif %}
+{% if styles is defined and styles is iterable %}
+{% for style in styles %}
+{% if style.href is defined %}
+<link href="{{ style.href }}" type="text/css" rel="{{ style.rel|default('stylesheet') }}" media="{{ style.media|default('screen') }}" />
+{% elseif style.content is defined %}
+<style>{{ style.content|raw }}</style>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if scripts is defined and scripts is iterable %}
+{% for script in scripts %}
+{% if journal3.js_defer %}
+<script src="{{ script }}" defer></script>
+{% else %}
+<script src="{{ script }}"></script>
+{% endif %}
+{% endfor %}
+{% endif %}
+<!-- Anima Theme CSS -->
+<link href="catalog/view/theme/journal3/stylesheet/anima/globals.css" rel="stylesheet" />
+<link href="catalog/view/theme/journal3/stylesheet/anima/styleguide.css" rel="stylesheet" />
+<link href="catalog/view/theme/journal3/stylesheet/anima/anima-core.css" rel="stylesheet" />
+<link href="catalog/view/theme/journal3/stylesheet/anima/anima-components.css" rel="stylesheet" />
+<link href="catalog/view/theme/journal3/stylesheet/anima/anima-responsive.css" rel="stylesheet" />
+{% if not journal3.is_popup and journal3.get('customCodeHeader') %}
+{{ journal3.get('customCodeHeader')|raw }}
+{% endif %}
+</head>
+<body class="{{ journal3.bodyClasses()|default('')|raw }}">
+<div class="global-wrapper">
+{% if not journal3.is_popup and journal3.get('notification_position') == 'top' %}
+<div class="site-notification">{{ journal3_notification|default('')|raw }}</div>
+{% endif %}
+<!-- Anima Info Bar -->
+<div class="anima-info-bar">
+  <div class="container">
+    <div class="info-items">
+      <div class="info-item">
+        <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-paper.svg" alt="Returns" class="info-icon" />
+        <span>{{ 'Easy Returns'|default('Easy Returns') }}</span>
+      </div>
+      <div class="info-item">
+        <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-delivery.svg" alt="Delivery" class="info-icon" />
+        <span>{{ 'Free Delivery'|default('Free Delivery') }}</span>
+      </div>
+      <div class="info-item">
+        <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-shield-done.svg" alt="Authenticity" class="info-icon" />
+        <span>{{ '100% Authentic'|default('100% Authentic') }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Anima Sale Banner -->
+<div class="anima-sale-banner">
+  <div class="container">
+    <div class="sale-content">
+      <span class="sale-text">{{ 'Sale Up to 50% OFF'|default('Sale Up to 50% OFF') }}</span>
+      <a href="#" class="sale-link">{{ 'Shop Now'|default('Shop Now') }}</a>
+    </div>
+  </div>
+</div>
+
+<!-- Anima Header -->
+<header class="anima-header">
+  <div class="container">
+    <div class="header-top">
+      <div class="header-left">
+        {% if logo is defined and logo %}
+        <div class="logo">
+          <a href="{{ home|default('/') }}">
+            <img src="{{ logo }}" alt="{{ name|default('') }}" class="img-responsive" />
+          </a>
+        </div>
+        {% endif %}
+      </div>
+      
+      <div class="header-center">
+        <nav class="main-navigation">
+          {% if journal3_header_menu is defined and journal3_header_menu %}
+          {{ journal3_header_menu|raw }}
+          {% else %}
+          <ul class="nav-menu">
+            <li><a href="{{ home|default('/') }}">{{ 'Home'|default('Home') }}</a></li>
+            <li><a href="#">{{ 'Shop'|default('Shop') }}</a></li>
+            <li><a href="#">{{ 'About'|default('About') }}</a></li>
+            <li><a href="#">{{ 'Contact'|default('Contact') }}</a></li>
+          </ul>
+          {% endif %}
+        </nav>
+      </div>
+      
+      <div class="header-right">
+        <div class="header-icons">
+          <!-- Search Icon -->
+          <a href="#" class="header-icon search-trigger" id="search-trigger">
+            <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-search.svg" alt="Search" />
+          </a>
+          
+          <!-- Account Icon -->
+          <a href="{{ account|default('#') }}" class="header-icon">
+            <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-profile.svg" alt="Account" />
+          </a>
+          
+          <!-- Wishlist Icon -->
+          <a href="{{ wishlist|default('#') }}" class="header-icon">
+            <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" />
+          </a>
+          
+          <!-- Cart Icon -->
+          <a href="{{ cart|default('#') }}" class="header-icon cart-icon">
+            <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-bag.svg" alt="Cart" />
+            {% if cart_total is defined and cart_total > 0 %}
+            <span class="cart-badge">{{ cart_total }}</span>
+            {% endif %}
+          </a>
+          
+          <!-- Phone Contact -->
+          <div class="header-phone">
+            <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-call.svg" alt="Phone" />
+            <span>{{ '+1 234 567 890'|default('+1 234 567 890') }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Search Overlay -->
+<div class="search-overlay" id="search-overlay">
+  <div class="search-overlay-content">
+    <button class="search-close" id="search-close">&times;</button>
+    <div class="search-form">
+      <form action="{{ search_action|default('index.php?route=product/search') }}" method="get">
+        <input type="text" name="search" placeholder="{{ 'Search products...'|default('Search products...') }}" class="search-input" />
+        <button type="submit" class="search-button">
+          <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-search.svg" alt="Search" />
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="site-wrapper">
+{{ journal3_header_notice|default('')|raw }}
+{% if not journal3.is_popup and journal3.get('notification_position') != 'top' %}
+<div class="site-notification">{{ journal3_notification|default('')|raw }}</div>
+{% endif %}
