@@ -1,0 +1,213 @@
+{% include 'common/header.twig' %}
+
+<!-- Breadcrumb -->
+<div class="anima-breadcrumb">
+    <ul class="anima-breadcrumb-list">
+        {% if breadcrumbs is defined and breadcrumbs is iterable %}
+            {% for breadcrumb in breadcrumbs %}
+                <li class="anima-breadcrumb-item">
+                    {% if not loop.last %}
+                        <a href="{{ breadcrumb.href|default('#') }}">{{ breadcrumb.text|default('') }}</a>
+                        <span class="anima-breadcrumb-separator">/</span>
+                    {% else %}
+                        {{ breadcrumb.text|default('') }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        {% else %}
+            <li class="anima-breadcrumb-item"><a href="/">الرئيسية</a></li>
+            <li class="anima-breadcrumb-item"><span class="anima-breadcrumb-separator">/</span></li>
+            <li class="anima-breadcrumb-item">{{ heading_title|default('المنتج') }}</li>
+        {% endif %}
+    </ul>
+</div>
+
+<!-- Product Detail -->
+<div class="anima-product-detail">
+    <!-- Product Gallery -->
+    <div class="anima-product-gallery">
+        <div class="anima-product-main-image" id="main-image">
+            <img src="{{ image|default('catalog/view/theme/journal3/image/anima/rectangle-1166.png') }}" alt="{{ heading_title|default('Product') }}" id="main-product-image" />
+        </div>
+        
+        {% if images is defined and images is iterable and images|length > 0 %}
+            <div class="anima-product-thumbnails">
+                <div class="anima-product-thumbnail active" onclick="changeImage('{{ image|default('') }}', this)">
+                    <img src="{{ image|default('catalog/view/theme/journal3/image/anima/rectangle-1166.png') }}" alt="{{ heading_title|default('Product') }}" />
+                </div>
+                {% for img in images %}
+                    <div class="anima-product-thumbnail" onclick="changeImage('{{ img.popup|default(img.thumb|default('')) }}', this)">
+                        <img src="{{ img.thumb|default('') }}" alt="{{ heading_title|default('Product') }}" />
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Product Info -->
+    <div class="anima-product-detail-info">
+        <h1 class="anima-product-detail-name">{{ heading_title|default('اسم المنتج') }}</h1>
+        
+        {% if model %}
+            <p class="anima-product-detail-model">{{ text_model|default('موديل') }}: {{ model }}</p>
+        {% endif %}
+        
+        <div class="anima-product-detail-price">
+            {% if special %}
+                <span class="anima-product-detail-price-new">{{ special }}</span>
+                <span class="anima-product-detail-price-old">{{ price }}</span>
+            {% else %}
+                <span class="anima-product-detail-price-new">{{ price|default('0.000 KD') }}</span>
+            {% endif %}
+        </div>
+        
+        <!-- Stock Status -->
+        <div class="anima-product-stock {% if stock|default('') == 'Out Of Stock' or stock|default('') == 'نفذ من المخزون' %}out-of-stock{% endif %}">
+            <p class="anima-product-stock-text">
+                {{ stock|default('متوفر في المخزون') }}
+            </p>
+        </div>
+        
+        <!-- Product Options -->
+        {% if options is defined and options is iterable and options|length > 0 %}
+            <div class="anima-product-options" id="product">
+                {% for option in options %}
+                    <div class="anima-product-option">
+                        <label class="anima-product-option-label">{{ option.name|default('') }}</label>
+                        
+                        {% if option.type == 'select' %}
+                            <select name="option[{{ option.product_option_id }}]" class="anima-sort-select">
+                                <option value="">{{ text_select|default('-- اختر --') }}</option>
+                                {% if option.product_option_value is defined and option.product_option_value is iterable %}
+                                    {% for option_value in option.product_option_value %}
+                                        <option value="{{ option_value.product_option_value_id }}">
+                                            {{ option_value.name }}
+                                            {% if option_value.price %}
+                                                ({{ option_value.price_prefix }}{{ option_value.price }})
+                                            {% endif %}
+                                        </option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        {% elseif option.type == 'radio' %}
+                            <div class="anima-product-option-values">
+                                {% if option.product_option_value is defined and option.product_option_value is iterable %}
+                                    {% for option_value in option.product_option_value %}
+                                        <label class="anima-product-option-value">
+                                            <input type="radio" name="option[{{ option.product_option_id }}]" value="{{ option_value.product_option_value_id }}" />
+                                            {{ option_value.name }}
+                                            {% if option_value.price %}
+                                                ({{ option_value.price_prefix }}{{ option_value.price }})
+                                            {% endif %}
+                                        </label>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- Quantity Selector -->
+        <div class="anima-product-quantity">
+            <span class="anima-quantity-label">الكمية:</span>
+            <div class="anima-quantity-control">
+                <button type="button" class="anima-quantity-btn" onclick="decreaseQuantity()">-</button>
+                <input type="text" name="quantity" value="1" id="quantity-input" class="anima-quantity-input" readonly />
+                <button type="button" class="anima-quantity-btn" onclick="increaseQuantity()">+</button>
+            </div>
+        </div>
+        
+        <!-- Product Actions -->
+        <div class="anima-product-actions">
+            <button type="button" class="anima-product-add-cart" onclick="addToCart()">
+                أضف إلى السلة
+            </button>
+            <button type="button" class="anima-product-add-wishlist" onclick="wishlist.add('{{ product_id|default(0) }}')">
+                <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" style="width: 24px; height: 24px;" />
+            </button>
+        </div>
+        
+        <!-- Product Description -->
+        {% if description %}
+            <div style="margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--anima-border-gray);">
+                <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 16px; direction: rtl;">وصف المنتج</h3>
+                <div style="font-size: 16px; color: var(--anima-gray); line-height: 1.6; direction: rtl;">
+                    {{ description|raw }}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Related Products -->
+{% if products is defined and products is iterable and products|length > 0 %}
+    <section class="anima-section" style="background-color: #f5f5f5;">
+        <div class="anima-section-header">
+            <h2 class="anima-section-title">{{ text_related|default('منتجات ذات صلة') }}</h2>
+        </div>
+        
+        <div class="anima-product-grid">
+            {% for product in products %}
+                {% include 'product/product_card.twig' with {'product': product} %}
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}
+
+<script>
+var product_id = {{ product_id|default(0) }};
+
+function changeImage(imageSrc, element) {
+    document.getElementById('main-product-image').src = imageSrc;
+    
+    // Update active thumbnail
+    var thumbnails = document.querySelectorAll('.anima-product-thumbnail');
+    thumbnails.forEach(function(thumb) {
+        thumb.classList.remove('active');
+    });
+    element.classList.add('active');
+}
+
+function increaseQuantity() {
+    var input = document.getElementById('quantity-input');
+    var currentValue = parseInt(input.value) || 1;
+    input.value = currentValue + 1;
+}
+
+function decreaseQuantity() {
+    var input = document.getElementById('quantity-input');
+    var currentValue = parseInt(input.value) || 1;
+    if (currentValue > 1) {
+        input.value = currentValue - 1;
+    }
+}
+
+function addToCart() {
+    var quantity = document.getElementById('quantity-input').value;
+    
+    // Get selected options
+    var options = {};
+    var optionElements = document.querySelectorAll('#product select, #product input[type="radio"]:checked');
+    
+    optionElements.forEach(function(element) {
+        if (element.value) {
+            var matches = element.name.match(/option\[(\d+)\]/);
+            if (matches) {
+                options[matches[1]] = element.value;
+            }
+        }
+    });
+    
+    // Call cart.add function (should be defined in Journal3)
+    if (typeof cart !== 'undefined' && typeof cart.add === 'function') {
+        cart.add(product_id, quantity, options);
+    } else {
+        // Fallback: redirect to cart
+        window.location = 'index.php?route=checkout/cart&product_id=' + product_id + '&quantity=' + quantity;
+    }
+}
+</script>
+
+{% include 'common/footer.twig' %}

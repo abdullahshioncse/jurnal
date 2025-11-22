@@ -1,0 +1,128 @@
+{% include 'common/header.twig' %}
+
+<!-- Hero Banner Section -->
+<section class="anima-hero">
+    <img src="catalog/view/theme/journal3/image/anima/rectangle-5-1.png" alt="Hero Banner" class="anima-hero-image" />
+    <div class="anima-hero-content">
+        <h1 class="anima-hero-title">{{ hero_title|default('تسوّق الآن') }}</h1>
+        <p class="anima-hero-desc">{{ hero_desc|default('اكتشف أحدث المجموعات من الملابس والإكسسوارات الرياضية') }}</p>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button class="anima-hero-btn" onclick="window.location='{{ shop_link|default('index.php?route=product/category') }}'">ابدأ التسوّق</button>
+            <button class="anima-hero-btn" style="background-color: transparent; border: 2px solid var(--anima-white);" onclick="window.location='{{ details_link|default('#') }}'">عرض التفاصيل</button>
+        </div>
+    </div>
+</section>
+
+<!-- You May Like Section -->
+<section class="anima-section">
+    <div class="anima-section-header">
+        <h2 class="anima-section-title">منتجات قد تعجبك</h2>
+        <div class="anima-section-nav">
+            <div class="anima-nav-arrow" onclick="scrollProducts('featured', -1)">
+                <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-arrow---right-2.svg" alt="Next" />
+            </div>
+            <div class="anima-nav-arrow" onclick="scrollProducts('featured', 1)">
+                <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-arrow---left-2-1.svg" alt="Previous" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="anima-product-grid" id="featured-products">
+        {% if featured_products is defined and featured_products is iterable %}
+            {% for product in featured_products %}
+                {% include 'product/product_card.twig' with {'product': product} %}
+            {% endfor %}
+        {% else %}
+            <!-- Placeholder products -->
+            {% for i in 1..4 %}
+                <div class="anima-product-card">
+                    <div class="anima-product-image-wrapper">
+                        <img src="catalog/view/theme/journal3/image/anima/rectangle-1166.png" alt="Product" class="anima-product-image" />
+                        <div class="anima-product-wishlist">
+                            <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" style="width: 20px; height: 20px;" />
+                        </div>
+                        <div class="anima-product-badge">مجموعة جديدة</div>
+                    </div>
+                    <div class="anima-product-info">
+                        <h3 class="anima-product-name">T-SHIRT ENERGY - Red and White</h3>
+                        <p class="anima-product-model">8001254914589</p>
+                        <div class="anima-product-price">
+                            <span class="anima-product-price-new">5.000 KD</span>
+                        </div>
+                        <button class="anima-product-cart-btn">أضف إلى السلة</button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</section>
+
+<!-- New Arrivals Section -->
+<section class="anima-section" style="background-color: #f5f5f5;">
+    <div class="anima-section-header">
+        <div>
+            <h2 class="anima-section-title">وصل حديثًا</h2>
+            <div style="display: flex; gap: 24px; margin-top: 16px; justify-content: flex-end;">
+                <span style="font-size: 16px; font-weight: 400; color: var(--anima-eerie-black); opacity: 0.7; cursor: pointer;">إكسسوارات</span>
+                <span style="font-size: 16px; font-weight: 400; color: var(--anima-eerie-black); opacity: 0.7; cursor: pointer;">ملابس نسائية</span>
+                <span style="font-size: 16px; font-weight: 600; color: var(--anima-eerie-black); cursor: pointer; border-bottom: 2px solid var(--anima-eerie-black);">ملابس رجالية</span>
+            </div>
+        </div>
+        <div class="anima-section-nav">
+            <div class="anima-nav-arrow" onclick="scrollProducts('new', -1)">
+                <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-arrow---right-2.svg" alt="Next" />
+            </div>
+            <div class="anima-nav-arrow" onclick="scrollProducts('new', 1)">
+                <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-arrow---left-2-1.svg" alt="Previous" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="anima-product-grid" id="new-products">
+        {% if new_products is defined and new_products is iterable %}
+            {% for product in new_products %}
+                {% include 'product/product_card.twig' with {'product': product} %}
+            {% endfor %}
+        {% else %}
+            <!-- Placeholder products -->
+            {% for i in 1..4 %}
+                <div class="anima-product-card">
+                    <div class="anima-product-image-wrapper">
+                        <img src="catalog/view/theme/journal3/image/anima/rectangle-116{{ i + 5 }}.png" alt="Product" class="anima-product-image" />
+                        <div class="anima-product-wishlist">
+                            <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" style="width: 20px; height: 20px;" />
+                        </div>
+                        <div class="anima-product-badge">مجموعة جديدة</div>
+                    </div>
+                    <div class="anima-product-info">
+                        <h3 class="anima-product-name">T-SHIRT ENERGY - Red and White</h3>
+                        <p class="anima-product-model">8001254914589</p>
+                        <div class="anima-product-price">
+                            <span class="anima-product-price-new">5.000 KD</span>
+                        </div>
+                        <button class="anima-product-cart-btn">أضف إلى السلة</button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <div style="text-align: center; margin-top: 32px;">
+        <button class="anima-hero-btn" onclick="window.location='{{ all_products|default('index.php?route=product/category') }}'">عرض الكل</button>
+    </div>
+</section>
+
+<script>
+function scrollProducts(section, direction) {
+    const container = document.getElementById(section + '-products');
+    if (container) {
+        const scrollAmount = container.offsetWidth / 2;
+        container.scrollBy({
+            left: scrollAmount * direction,
+            behavior: 'smooth'
+        });
+    }
+}
+</script>
+
+{% include 'common/footer.twig' %}

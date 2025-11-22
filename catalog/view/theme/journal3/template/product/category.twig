@@ -1,0 +1,93 @@
+{% include 'common/header.twig' %}
+
+<!-- Breadcrumb -->
+<div class="anima-breadcrumb">
+    <ul class="anima-breadcrumb-list">
+        {% if breadcrumbs is defined and breadcrumbs is iterable %}
+            {% for breadcrumb in breadcrumbs %}
+                <li class="anima-breadcrumb-item">
+                    {% if not loop.last %}
+                        <a href="{{ breadcrumb.href|default('#') }}">{{ breadcrumb.text|default('') }}</a>
+                        <span class="anima-breadcrumb-separator">/</span>
+                    {% else %}
+                        {{ breadcrumb.text|default('') }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        {% else %}
+            <li class="anima-breadcrumb-item"><a href="/">الرئيسية</a></li>
+            <li class="anima-breadcrumb-item"><span class="anima-breadcrumb-separator">/</span></li>
+            <li class="anima-breadcrumb-item">{{ heading_title|default('المنتجات') }}</li>
+        {% endif %}
+    </ul>
+</div>
+
+<!-- Category Header -->
+<div class="anima-category-header">
+    <h1 class="anima-category-title">{{ heading_title|default('المنتجات') }}</h1>
+    {% if description %}
+        <p class="anima-category-desc">{{ description|raw }}</p>
+    {% endif %}
+</div>
+
+<!-- Category Toolbar (Filters & Sort) -->
+<div class="anima-category-toolbar">
+    <div class="anima-category-filter">
+        {% if categories is defined and categories is iterable and categories|length > 0 %}
+            <button class="anima-filter-btn" onclick="toggleFilter()">
+                <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-filter-3.svg" alt="Filter" style="width: 20px; height: 20px;" />
+                <span>تصفية</span>
+            </button>
+        {% endif %}
+    </div>
+    
+    <div class="anima-category-sort">
+        <label for="sort-select" style="font-size: 14px; color: var(--anima-eerie-black);">ترتيب حسب:</label>
+        <select id="sort-select" name="sort" class="anima-sort-select" onchange="location = this.value;">
+            {% if sorts is defined and sorts is iterable %}
+                {% for sort_option in sorts %}
+                    <option value="{{ sort_option.href|default('#') }}" {% if sort_option.value == sort %}selected{% endif %}>
+                        {{ sort_option.text|default('') }}
+                    </option>
+                {% endfor %}
+            {% else %}
+                <option value="{{ sort_url|default('#') }}&sort=p.sort_order&order=ASC">الافتراضي</option>
+                <option value="{{ sort_url|default('#') }}&sort=pd.name&order=ASC">الاسم (أ - ي)</option>
+                <option value="{{ sort_url|default('#') }}&sort=pd.name&order=DESC">الاسم (ي - أ)</option>
+                <option value="{{ sort_url|default('#') }}&sort=p.price&order=ASC">السعر (منخفض &gt; عالي)</option>
+                <option value="{{ sort_url|default('#') }}&sort=p.price&order=DESC">السعر (عالي &gt; منخفض)</option>
+            {% endif %}
+        </select>
+    </div>
+</div>
+
+<!-- Products Grid -->
+<section class="anima-section">
+    <div class="anima-product-grid">
+        {% if products is defined and products is iterable and products|length > 0 %}
+            {% for product in products %}
+                {% include 'product/product_card.twig' with {'product': product} %}
+            {% endfor %}
+        {% else %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 48px; color: var(--anima-gray);">
+                <p style="font-size: 18px;">{{ text_empty|default('لا توجد منتجات في هذه الفئة.') }}</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if pagination %}
+        <div class="anima-pagination">
+            {{ pagination|raw }}
+        </div>
+    {% endif %}
+</section>
+
+<script>
+function toggleFilter() {
+    // Toggle filter panel
+    alert('Filter functionality to be implemented');
+}
+</script>
+
+{% include 'common/footer.twig' %}

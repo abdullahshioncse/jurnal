@@ -1,0 +1,55 @@
+{# Product Card Component #}
+{% set product_id = product.product_id|default(0) %}
+{% set product_name = product.name|default('Product Name') %}
+{% set product_model = product.model|default('') %}
+{% set product_price = product.price|default('0.000 KD') %}
+{% set product_special = product.special|default('') %}
+{% set product_image = product.thumb|default('catalog/view/theme/journal3/image/anima/rectangle-1166.png') %}
+{% set product_link = product.href|default('#') %}
+{% set product_badge = product.badge|default('') %}
+
+<div class="anima-product-card">
+    <div class="anima-product-image-wrapper">
+        <a href="{{ product_link }}">
+            <img src="{{ product_image }}" alt="{{ product_name }}" class="anima-product-image" />
+        </a>
+        
+        <!-- Wishlist Button -->
+        <div class="anima-product-wishlist" onclick="wishlist.add('{{ product_id }}')">
+            <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" style="width: 20px; height: 20px;" />
+        </div>
+        
+        <!-- Product Badge (New/Sale) -->
+        {% if product_badge %}
+            <div class="anima-product-badge">{{ product_badge }}</div>
+        {% elseif product_special %}
+            <div class="anima-product-badge">تخفيض</div>
+        {% elseif product.new|default(false) %}
+            <div class="anima-product-badge">جديد</div>
+        {% endif %}
+    </div>
+    
+    <div class="anima-product-info">
+        <a href="{{ product_link }}">
+            <h3 class="anima-product-name">{{ product_name }}</h3>
+        </a>
+        
+        {% if product_model %}
+            <p class="anima-product-model">{{ product_model }}</p>
+        {% endif %}
+        
+        <div class="anima-product-price">
+            {% if product_special %}
+                <span class="anima-product-price-new">{{ product_special }}</span>
+                <span class="anima-product-price-old">{{ product_price }}</span>
+            {% else %}
+                <span class="anima-product-price-new">{{ product_price }}</span>
+            {% endif %}
+        </div>
+        
+        <!-- Add to Cart Button -->
+        <button class="anima-product-cart-btn" onclick="cart.add('{{ product_id }}')">
+            أضف إلى السلة
+        </button>
+    </div>
+</div>

@@ -1,0 +1,62 @@
+<!-- Footer -->
+<footer class="anima-footer">
+    <!-- Newsletter Section -->
+    <div class="anima-newsletter">
+        <h3 class="anima-newsletter-title">هل ترغب في الاشتراك في نشرتنا الإخبارية؟</h3>
+        <form class="anima-newsletter-form" action="{{ newsletter_action|default('index.php?route=extension/module/newsletter/subscribe') }}" method="post">
+            <input type="email" name="email" class="anima-newsletter-input" placeholder="البريد الإلكتروني" required />
+            <button type="submit" class="anima-newsletter-btn">إرسال</button>
+        </form>
+    </div>
+    
+    <!-- Payment Icons -->
+    <div class="anima-footer-payment">
+        <img src="catalog/view/theme/journal3/image/anima/mastercard-1@2x.png" alt="Mastercard" />
+        <img src="catalog/view/theme/journal3/image/anima/applepay-1.svg" alt="Apple Pay" />
+        <img src="catalog/view/theme/journal3/image/anima/visa-logo-1.svg" alt="Visa" />
+    </div>
+    
+    <!-- Footer Content -->
+    <div class="anima-footer-content">
+        <!-- Shop Column -->
+        <div class="anima-footer-column">
+            <h4 class="anima-footer-column-title">تسوّق الآن</h4>
+            {% if footer_categories is defined and footer_categories is iterable %}
+                {% for category in footer_categories %}
+                    <a href="{{ category.href|default('#') }}" class="anima-footer-link">{{ category.name|default('') }}</a>
+                {% endfor %}
+            {% else %}
+                <a href="#" class="anima-footer-link">ملابس رجالية</a>
+                <a href="#" class="anima-footer-link">ملابس نسائية</a>
+                <a href="#" class="anima-footer-link">إكسسوارات</a>
+                <a href="#" class="anima-footer-link">تخفيضات</a>
+            {% endif %}
+        </div>
+        
+        <!-- Contact Column -->
+        <div class="anima-footer-column">
+            <h4 class="anima-footer-column-title">تواصل معنا</h4>
+            <a href="{{ contact|default('index.php?route=information/contact') }}" class="anima-footer-link">تواصل معنا</a>
+            <a href="{{ privacy|default('index.php?route=information/information&information_id=3') }}" class="anima-footer-link">سياسه الخصوصيه</a>
+            <a href="{{ returns|default('index.php?route=information/information&information_id=4') }}" class="anima-footer-link">سياسة الاسترجاع</a>
+        </div>
+        
+        <!-- Quick Links Column -->
+        <div class="anima-footer-column">
+            <h4 class="anima-footer-column-title">روابط سريعة</h4>
+            <a href="{{ account|default('index.php?route=account/account') }}" class="anima-footer-link">حسابي</a>
+            <a href="{{ about|default('index.php?route=information/information&information_id=4') }}" class="anima-footer-link">من نحن</a>
+            <a href="{{ contact|default('index.php?route=information/contact') }}" class="anima-footer-link">مساعدة</a>
+            <a href="{{ privacy|default('index.php?route=information/information&information_id=3') }}" class="anima-footer-link">سياسة الخصوصية</a>
+            <a href="{{ terms|default('index.php?route=information/information&information_id=5') }}" class="anima-footer-link">شروط الاستخدام</a>
+        </div>
+    </div>
+    
+    <!-- Copyright -->
+    <div class="anima-footer-copyright">
+        <p>{{ powered|default('© 2025 جميع الحقوق محفوظة')|raw }}</p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,1 +1,122 @@
-{% if header %}\n    <header id=\"header\">\n        <div class=\"container\">\n            <div class=\"row\">\n                <div class=\"col-sm-12\">\n                    <h1>{{ heading_title }}</h1>\n                    <nav>\n                        <ul>\n                            {% for link in links %}\n                                <li><a href=\"{{ link.href }}\">{{ link.name }}</a></li>\n                            {% endfor %}\n                        </ul>\n                    </nav>\n                </div>\n            </div>\n        </div>\n    </header>\n{% endif %}
+<!DOCTYPE html>
+<html dir="{{ direction|default('rtl') }}" lang="{{ lang|default('ar') }}">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>{{ title|default('') }}</title>
+    <base href="{{ base|default('') }}" />
+    
+    {% if description %}
+        <meta name="description" content="{{ description }}" />
+    {% endif %}
+    
+    {% if keywords %}
+        <meta name="keywords" content="{{ keywords }}" />
+    {% endif %}
+    
+    <!-- Anima Theme CSS -->
+    <link rel="stylesheet" href="catalog/view/theme/journal3/stylesheet/anima/anima-main.css" />
+    
+    {% if styles is defined and styles is iterable %}
+        {% for style in styles %}
+            <link href="{{ style.href }}" rel="{{ style.rel|default('stylesheet') }}" media="{{ style.media|default('screen') }}" />
+        {% endfor %}
+    {% endif %}
+    
+    {% if scripts is defined and scripts is iterable %}
+        {% for script in scripts %}
+            <script src="{{ script }}" type="text/javascript"></script>
+        {% endfor %}
+    {% endif %}
+    
+    {% if analytics is defined and analytics is iterable %}
+        {% for analytic in analytics %}
+            {{ analytic|raw }}
+        {% endfor %}
+    {% endif %}
+</head>
+<body class="anima-theme">
+
+<!-- Info Bar -->
+<div class="anima-info-bar">
+    <div class="anima-info-item">
+        <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-bag-2-1.svg" alt="Returns" />
+        <div>
+            <div class="anima-info-title">الاسترجاع و التبديل</div>
+            <p class="anima-info-desc">إمكانيه الأسترجاع في حال كان القياس غير مناسب</p>
+        </div>
+    </div>
+    <div class="anima-info-item">
+        <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-time-circle.svg" alt="Delivery" />
+        <div>
+            <div class="anima-info-title">توصيل خلال ٢٤ ساعة</div>
+            <p class="anima-info-desc">توصيل محلي لجميع مناطق الكويت خلال ٢٤ ساعه فقط ١ دينار كويتي من العبدلي الى الخيران</p>
+        </div>
+    </div>
+    <div class="anima-info-item">
+        <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-tick-square.svg" alt="Authenticity" />
+        <div>
+            <div class="anima-info-title">منتجات أصلية 100%</div>
+            <p class="anima-info-desc">جميع المنتجات الأصلية من المصنع مباشره ملابس رياضية - أكسسوارات لتمارين</p>
+        </div>
+    </div>
+</div>
+
+<!-- Sale Banner -->
+<div class="anima-sale-banner">
+    <p class="anima-sale-text">حصل على خصم 20٪ قبل نهاية نوفمبر!</p>
+</div>
+
+<!-- Header -->
+<header class="anima-header">
+    <div class="anima-header-menu">
+        <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-profile.svg" alt="Profile" onclick="window.location='{{ account|default('index.php?route=account/account') }}'" style="cursor: pointer;" />
+        <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-bag-2.svg" alt="Cart" onclick="window.location='{{ cart|default('index.php?route=checkout/cart') }}'" style="cursor: pointer;" />
+        <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-heart.svg" alt="Wishlist" onclick="window.location='{{ wishlist|default('index.php?route=account/wishlist') }}'" style="cursor: pointer;" />
+        <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-search-1.svg" alt="Search" onclick="document.getElementById('anima-search-overlay').classList.add('active')" style="cursor: pointer;" />
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="font-size: 16px; font-weight: 400; color: var(--anima-eerie-black);">{{ phone|default('965-22091914') }}</div>
+            <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-call.svg" alt="Call" style="width: 24px; height: 24px;" />
+        </div>
+    </div>
+    
+    <div class="anima-logo">
+        {% if logo %}
+            <a href="{{ home|default('/') }}"><img src="{{ logo }}" alt="{{ name|default('Store') }}" /></a>
+        {% else %}
+            <a href="{{ home|default('/') }}" style="font-size: 20px; font-weight: 500; color: var(--anima-eerie-black);">{{ name|default('LOGO') }}</a>
+        {% endif %}
+    </div>
+    
+    <div class="anima-header-menu">
+        <!-- Right side placeholder for layout balance -->
+    </div>
+</header>
+
+<!-- Category Menu -->
+<nav class="anima-category-menu">
+    {% if categories is defined and categories is iterable %}
+        {% for category in categories %}
+            <a href="{{ category.href|default('#') }}" class="anima-category-link">{{ category.name|default('') }}</a>
+        {% endfor %}
+    {% else %}
+        <a href="#" class="anima-category-link">تخفيضات</a>
+        <a href="#" class="anima-category-link">إكسسوارات</a>
+        <a href="#" class="anima-category-link">ملابس نسائية</a>
+        <a href="#" class="anima-category-link">ملابس رجالية</a>
+    {% endif %}
+</nav>
+
+<!-- Search Overlay -->
+<div id="anima-search-overlay" class="anima-search-overlay">
+    <div class="anima-search-container">
+        <div class="anima-search-header">
+            <h2 class="anima-search-title">البحث</h2>
+            <img src="catalog/view/theme/journal3/image/anima/iconly-sharp-close-square.svg" alt="Close" class="anima-search-close" onclick="document.getElementById('anima-search-overlay').classList.remove('active')" />
+        </div>
+        <form action="{{ search_action|default('index.php?route=product/search') }}" method="get">
+            <input type="text" name="search" class="anima-search-input" placeholder="ابحث عن المنتجات..." value="{{ search|default('') }}" />
+        </form>
+    </div>
+</div>
